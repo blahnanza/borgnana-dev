@@ -1,2 +1,3 @@
 /borgnana/*
+!/borgnana/.empty
 /.vagrant
