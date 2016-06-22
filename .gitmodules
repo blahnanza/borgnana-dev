@@ -1,0 +1,3 @@
+[submodule "borgnana"]
+	path = borgnana
+	url = https://github.com/blahnanza/borgnana.git
