@@ -1,0 +1,95 @@
+---
+  - name: create miniircd user
+    become: yes
+    become_user: root
+    user: name={{ miniircd_user }}
+  - name: create miniircd destination
+    become: yes
+    become_user: root
+    file: path={{ miniircd_dest }} state=directory mode=0755 owner=vagrant group=vagrant
+
+  - name: clone miniircd
+    git: repo={{ miniircd_repo }} dest={{ miniircd_dest }} version={{ miniircd_branch }}
+
+ # Create/setup miniircd jail
+  - name: create miniircd jail directory
+    become: yes
+    become_user: root
+    file: path={{ miniircd_jail }}/dev state=directory mode=0755 owner={{ miniircd_user }} group={{ miniircd_user }}
+  - name: create jail /dev/null
+    become: yes
+    become_user: root
+    command: /bin/mknod {{ miniircd_jail }}/dev/null c 1 3 creates={{ miniircd_jail }}/dev/null
+  - name: create jail /dev/urandom
+    become: yes
+    become_user: root
+    command: /bin/mknod {{ miniircd_jail }}/dev/urandom c 1 9 creates={{ miniircd_jail }}/dev/urandom
+  - name: set mode on jail /dev/null
+    become: yes
+    become_user: root
+    file: path={{ miniircd_jail }}/dev/null mode=666
+  - name: set mode on jail /dev/urandom
+    become: yes
+    become_user: root
+    file: path={{ miniircd_jail }}/dev/urandom mode=666
+  - name: copy motd file
+    become: yes
+    become_user: root
+    template: src=templates/motd.txt.j2 dest={{ miniircd_jail }}/motd.txt owner=root group=root mode=0644
+    notify:
+      - restart miniircd
+
+  # Generate supervisor config
+  - name: generate supervisor config from template
+    become: yes
+    become_user: root
+    template: src=templates/miniircd.conf.j2 dest=/etc/supervisor/conf.d/miniircd.conf owner=root group=root mode=0644
+    notify:
+      - restart miniircd
+  # Make sure miniircd is running
+  - name: make sure miniircd is running
+    become: yes
+    become_user: root
+    supervisorctl: name=miniircd state=present
+  - name: create miniircd user
+    become: yes
+    become_user: root
+    user: name={{ miniircd_user }}
+  - name: create miniircd destination
+    become: yes
+    become_user: root
+    file: path={{ miniircd_dest }} state=directory mode=0755 owner=vagrant group=vagrant
+
+
+  - name: clone borgnana
+    git: repo={{ borgnana_repo }} dest={{ borgnana_dest }} version={{ borgnana_branch }}
+    ignore_errors: yes
+
+  # Generate borgnana config
+  # This includes a small workaround due to borgnana residing on vboxfs: https://github.com/ansible/ansible/issues/9526
+  - name: generate borgnana config from template
+    become: yes
+    become_user: root
+    template: src=templates/pyborg-irc.cfg.j2 dest=/tmp/pyborg-irc.cfg owner=vagrant group=vagrant mode=0644
+    notify:
+      - vboxfs workaround
+
+
+  # Generate supervisor config
+  - name: generate borgnana supervisor config from template
+    become: yes
+    become_user: root
+    template: src=templates/borgnana.conf.j2 dest=/etc/supervisor/conf.d/borgnana.conf owner=root group=root mode=0644
+    notify:
+      - restart borgnana
+  # Make sure borgnana is running
+  - name: make sure borgnana is running
+    become: yes
+    become_user: root
+    supervisorctl: name=borgnana state=present
+
+  # Use irssi config template to create ~vagrant/.irssi/config
+  - name: test irssi config directory
+    file: path=/home/vagrant/.irssi state=directory mode=0700
+  - name: generate irssi config from template
+    template: src=templates/irssi-config.j2 dest=/home/vagrant/.irssi/config mode=0600 force=no

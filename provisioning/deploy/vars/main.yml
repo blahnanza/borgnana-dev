@@ -1,0 +1,11 @@
+# borgnana
+borgnana_repo: https://github.com/blahnanza/borgnana.git
+borgnana_branch: master
+borgnana_dest: /srv/borgnana
+
+# miniircd
+miniircd_repo: https://github.com/jrosdahl/miniircd.git
+miniircd_branch: master
+miniircd_dest: /srv/miniircd
+miniircd_jail: /var/jail/miniircd
+miniircd_user: miniircd

@@ -1,0 +1,19 @@
+- name: restart miniircd
+  # supervisorctl module is a bit junky, doesn't support rereading configs yet
+  # So I just force the command
+  become: yes
+  become_user: root
+  become_method: sudo
+  command: /usr/bin/supervisorctl -c /etc/supervisor/supervisord.conf restart miniircd
+
+- name: vboxfs workaround
+  command: cp /tmp/pyborg-irc.cfg {{ borgnana_dest }}/pyborg-irc.cfg
+  notify: restart borgnana
+
+- name: restart borgnana
+  # supervisorctl module is a bit junky, doesn't support rereading configs yet
+  # So I just force the command
+  become: yes
+  become_user: root
+  become_method: sudo
+  command: /usr/bin/supervisorctl -c /etc/supervisor/supervisord.conf restart borgnana

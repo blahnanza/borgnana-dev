@@ -1,0 +1,10 @@
+[program:miniircd]
+user=root
+command={{ miniircd_dest }}/miniircd --statedir=/ --logdir=/ --setuid={{ miniircd_user }} --motd=/motd.txt --chroot={{ miniircd_jail }}
+directory={{ miniircd_dest }}
+autostart=true
+autorestart=true
+killasgroup=true
+stopsignal=KILL
+stopwaitsecs=5
+priority=200

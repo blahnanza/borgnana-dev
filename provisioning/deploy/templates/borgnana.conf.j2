@@ -1,0 +1,10 @@
+[program:borgnana]
+user=vagrant
+command={{ borgnana_dest }}/pyborg-irc.py
+directory={{ borgnana_dest }}
+autostart=true
+autorestart=true
+killasgroup=true
+stopsignal=KILL
+stopwaitsecs=5
+priority=200
