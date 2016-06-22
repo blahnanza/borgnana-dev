@@ -92,7 +92,7 @@ Vagrant.configure(2) do |config|
     controller.vm.network :private_network, ip: "192.168.99.10"
     controller.vm.hostname = "controller"
     # install ansible
-    controller.vm.provision "shell", privileged: false, path: "install_ansible.sh"
+    controller.vm.provision "shell", privileged: false, path: "provisioning/install_ansible.sh"
     # run ansible
     controller.vm.provision "shell", privileged: false, inline: <<-EOF
       if [ ! -f /home/vagrant/.ssh/id_rsa ]; then
