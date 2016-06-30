@@ -6,7 +6,11 @@
   become_method: sudo
   command: /usr/bin/supervisorctl -c /etc/supervisor/supervisord.conf restart miniircd
 
-- name: vboxfs workaround
+- name: vboxfs pyborg.cfg workaround
+  command: cp /tmp/pyborg.cfg {{ borgnana_dest }}/pyborg.cfg
+  notify: restart borgnana
+
+- name: vboxfs pyborg-irc.cfg workaround
   command: cp /tmp/pyborg-irc.cfg {{ borgnana_dest }}/pyborg-irc.cfg
   notify: restart borgnana
 

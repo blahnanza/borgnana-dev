@@ -67,12 +67,24 @@
 
   # Generate borgnana config
   # This includes a small workaround due to borgnana residing on vboxfs: https://github.com/ansible/ansible/issues/9526
-  - name: generate borgnana config from template
+  - name: generate pyborg config from template
+    become: yes
+    become_user: root
+    template: src=templates/pyborg.cfg.j2 dest=/tmp/pyborg.cfg owner=vagrant group=vagrant mode=0644
+    notify:
+      - vboxfs pyborg.cfg workaround
+
+  - name: generate pyborg-irc config from template
     become: yes
     become_user: root
     template: src=templates/pyborg-irc.cfg.j2 dest=/tmp/pyborg-irc.cfg owner=vagrant group=vagrant mode=0644
     notify:
-      - vboxfs workaround
+      - vboxfs pyborg-irc.cfg workaround
+
+  - name: create borgnana data destination
+    become: yes
+    become_user: root
+    file: path={{ borgnana_dest }}/data state=directory mode=0755 owner=vagrant group=vagrant
 
 
   # Generate supervisor config
