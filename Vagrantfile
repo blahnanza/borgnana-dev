@@ -86,6 +86,7 @@ Vagrant.configure(2) do |config|
     borgnana.vm.synced_folder ".", "/vagrant", disabled: false
     borgnana.vm.synced_folder "./borgnana", "/srv/borgnana"
     borgnana.vm.network "forwarded_port", guest: 6667, host: 6667
+    borgnana.vm.network "forwarded_port", guest: 8085, host: 8085
   end
 
   config.vm.define "controller" do |controller|

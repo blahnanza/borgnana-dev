@@ -1,6 +1,6 @@
 [program:borgnana]
 user=vagrant
-command={{ borgnana_dest }}/pyborg-irc.py
+command=/usr/bin/python {{ borgnana_dest }}/pyborg-irc.py
 directory={{ borgnana_dest }}
 autostart=true
 autorestart=true
