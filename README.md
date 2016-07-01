@@ -43,3 +43,18 @@ file. It's a shared directory with the VM.
 In order to restart borgnana, use "vagrant ssh" and then
 
     sudo supervisorctl restart borgnana
+
+I recommend working on the bot out of supervisord though, vagrant ssh and then:
+
+    sudo supervisorctl stop borgnana
+    cd /srv/borgnana
+    python pyborg-irc.py
+
+
+Then you can edit the files in borgnana-dev/borgnana with your favourite editor on your local machine, and restart the bot
+in your vagrant ssh window with Ctrl-C to stop it, Up->Enter to run it again.
+
+It may be helpful to use the bot's !loadurl command to load in external URLs using urllib2. An attempt is made to strip
+html tags from any URL given to it, but be wise about what you load in to avoid polluting the dictionary with rubbish.
+
+I've had fun loading stuff from the gutenberg project (https://www.gutenberg.org/) and similar.
